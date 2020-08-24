@@ -499,7 +499,6 @@ class RoIHeads(torch.nn.Module):
             boxes = boxes.reshape(-1, 4)
             scores = scores.flatten()
             labels = labels.flatten()
-
             # remove low scoring boxes
             inds = torch.nonzero(scores > self.score_thresh).squeeze(1)
             boxes, scores, labels, FS = boxes[inds], scores[inds], labels[inds], labels[inds]

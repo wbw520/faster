@@ -151,7 +151,7 @@ class FasterRCNN(GeneralizedRCNN):
                  rpn_batch_size_per_image=256, rpn_positive_fraction=0.5,
                  # Box parameters
                  box_roi_pool=None, box_head=None, box_predictor=None,
-                 box_score_thresh=0.05, box_nms_thresh=0.5, box_detections_per_img=100,
+                 box_score_thresh=0.1, box_nms_thresh=0.2, box_detections_per_img=100,
                  box_fg_iou_thresh=0.5, box_bg_iou_thresh=0.5,
                  box_batch_size_per_image=512, box_positive_fraction=0.25,
                  bbox_reg_weights=None):
@@ -281,13 +281,13 @@ class FastRCNNPredictor(nn.Module):
 
 
 model_urls = {
-    'fasterrcnn_resnet101_fpn_coco':
+    'fasterrcnn_resnet50_fpn_coco':
         'https://download.pytorch.org/models/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth',
 }
 
 
 def fasterrcnn_resnet_fpn(pretrained=False, progress=True,
-                            num_classes=352, pretrained_backbone=True, **kwargs):
+                            num_classes=91, pretrained_backbone=True, **kwargs):
     """
     Constructs a Faster R-CNN model with a ResNet-101-FPN backbone.
 
@@ -326,14 +326,14 @@ def fasterrcnn_resnet_fpn(pretrained=False, progress=True,
     if pretrained:
         # no need to download the backbone if pretrained is set
         pretrained_backbone = False
-    backbone = resnet_fpn_backbone('resnet101', pretrained_backbone)
+    backbone = resnet_fpn_backbone('resnet50', pretrained_backbone)
     anchor_sizes = ((32,), (64,), (128,), (256,), (512,))
     aspect_ratios = ((0.5, 1.0, 2.0),) * len(anchor_sizes)
     anchor_generator = AnchorGenerator(anchor_sizes, aspect_ratios)
     roi_pooler = torchvision.ops.MultiScaleRoIAlign(featmap_names=[0], output_size=7, sampling_ratio=2)
     model = FasterRCNN(backbone, num_classes, rpn_anchor_generator=anchor_generator, box_roi_pool=roi_pooler)
     if pretrained:
-        state_dict = load_state_dict_from_url(model_urls['fasterrcnn_resnet101_fpn_coco'],
+        state_dict = load_state_dict_from_url(model_urls['fasterrcnn_resnet50_fpn_coco'],
                                               progress=progress)
         model.load_state_dict(state_dict)
     return model

@@ -116,7 +116,7 @@ class CocoDetection(VisionDataset):
 
         path = coco.loadImgs(img_id)[0]['file_name']
 
-        img = Image.open(os.path.join(self.root, path)).convert('RGB')
+        img = Image.open(os.path.join(self.root, path, "total.png")).convert('RGB')
         if self.transforms is not None:
             img, target = self.transforms(img, target)
 
